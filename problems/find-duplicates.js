@@ -47,23 +47,125 @@ solution code must meet the following constraints:
 
 // Your code here 
 
+// Option 1: using for loop with object construction
+// const findDuplicatesIterative = (arr) => {
+//   let obj = {};
+//   let res = [];
 
+//   for (let i = 0; i < arr.length; i++) {
+//     let el = arr[i];
+//     if (obj[el]) {
+//       obj[el]++;
+//       if (obj[el] === 2) res.push(el);
+//     } else  obj[el] = 1
+//   }
+//   return res;
+//   // console.log(res);
+// }
+
+// Option 2: using for loop with array.slice;
+function findDuplicatesIterative(arr) {
+  let res = [];
+  for (let i = 0; i < arr.length; i++) {
+    if (((arr.slice(0,i).concat(arr.slice(i+1))).includes(arr[i])) && !res.includes(arr[i])) {
+      res.push(arr[i]);
+    }
+  }
+  return res;
+  // console.log(res);
+}
 
 /* PROBLEM 2. findDuplicatesRecursive: Must solve with recursion */
 
 // Your code here 
+
+// option 1: with 2 default parameters;
+// function findDuplicatesRecursive (arr,res=[], obj={}) {
+//   // 1. base case
+//   if (arr.length === 0) {
+ 
+//     return res;
+//   }
+
+//   // 2. recursion
+//   else {
+//     let el = arr.pop();
+
+//     if (obj[el]) {
+//       obj[el]++;
+//       if (obj[el] === 2) res.push(el);
+//     } else obj[el] = 1;
+
+//     return findDuplicatesRecursive(arr,res,obj); 
+//     // what's the difference of having return here or not: 
+//     // answer: no difference, as it's just mutating the array, not calling for stacks
+//   }
+
+// }
+
+
+// option 2: with 1 default parameter with res = {};
+// const findDuplicatesRecursive = (arr, res={}) => {
+//   if (arr.length === 0) return [];
+
+//   let el = arr.pop();
+//   if (res[el] === undefined) res[el] = 1;
+//   else res[el] += 1;
+
+//   if (res[el] === 2) return [el].concat(findDuplicatesRecursive(arr, res));
+//   else return [].concat(findDuplicatesRecursive(arr, res));
+
+// }
 
 
 
 /* PROBLEM 3. findDuplicatesNoDefault: Must use recursion with no default parameters */
 
 // Your code here 
+function findDuplicatesNoDefault(arr) {
+  // 1. base case
+  if (arr.length === 0) return [];
 
+  let el = arr.shift();
+  let count = 0;
+
+  for (let i = 0; i < arr.length; i++) {
+    if (el === arr[i]) count++;
+  }
+
+  if (count === 1) return [el].concat(findDuplicatesNoDefault(arr));
+  else return [].concat(findDuplicatesNoDefault(arr));
+
+}
 
 
 /* PROBLEM 4. findDuplicatesChallenge: No for/while loops OR array looping methods */
+// can use default parameters
 
 // Your code here 
+const findDuplicatesChallenge = (arr, res={}, final=[]) => {
+    // option 1: with 1 parameter: findDuplicatesChallenge will have arr and res only
+    // if (arr.length === 0) return []; // if simply putting down return, it's sending undefined to the next function, adding 'undefined' to the array
+
+    // let el = arr.pop();
+    // if (res[el] === undefined) res[el] = 1;
+    // else res[el] += 1;
+
+    // if (res[el] === 2) return [el].concat(findDuplicatesChallenge(arr, res));
+    // else return [].concat(findDuplicatesChallenge(arr, res));
+
+    // option 2: with 2 parameters as is in line 146
+    if (arr.length === 0) return final;
+
+    let el = arr.pop();
+    if (res[el] === undefined) res[el] = 1;
+    else res[el] += 1;
+
+    if (res[el] === 2) {
+      final.push(el);
+      return findDuplicatesChallenge(arr, res, final); // if 'return' is omitted, the callstack will be undefined, making the final result undefined
+    } else return findDuplicatesChallenge(arr, res, final);
+}
 
 
 /*
@@ -83,9 +185,9 @@ MOCHA TESTS: Run `mocha` to run the mocha tests.
 // console.log(findDuplicatesRecursive([ 5, 8, 8, 2, 3 ]));
 // // [ 8 ]
 // console.log(findDuplicatesRecursive([ 5, 8, 8, 8, 2, 3, 3 ]));
-// // [ 8, 3 ] (only one 8; order of elements does not matter)
+// [ 8, 3 ] (only one 8; order of elements does not matter)
 // console.log(findDuplicatesRecursive([ 'a', 'word', 'a', 'another', 'word' ]));
-// // [ 'word', 'a' ] (order of elements does not matter)
+// [ 'word', 'a' ] (order of elements does not matter)
 
 // console.log(findDuplicatesNoDefault([ 5, 8, 8, 2, 3 ]));
 // // [ 8 ]
@@ -95,9 +197,9 @@ MOCHA TESTS: Run `mocha` to run the mocha tests.
 // // [ 'word', 'a' ] (order of elements does not matter)
 
 
-// console.log(findDuplicatesChallenge([ 5, 8, 8, 2, 3 ]));
-// // [ 8 ]
-// console.log(findDuplicatesChallenge([ 5, 8, 8, 8, 2, 3, 3 ]));
+console.log(findDuplicatesChallenge([ 5, 8, 8, 2, 3 ]));
+// [ 8 ]
+console.log(findDuplicatesChallenge([ 5, 8, 8, 8, 2, 3, 3 ]));
 // // [ 8, 3 ] (only one 8; order of elements does not matter)
 // console.log(findDuplicatesChallenge([ 'a', 'word', 'a', 'another', 'word' ]));
 // // [ 'word', 'a' ] (order of elements does not matter)
